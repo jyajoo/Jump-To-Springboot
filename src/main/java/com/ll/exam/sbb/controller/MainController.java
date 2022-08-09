@@ -1,9 +1,7 @@
 package com.ll.exam.sbb.controller;
 
-import com.ll.exam.sbb.domain.Article;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.stream.Collectors;
