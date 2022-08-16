@@ -10,6 +10,11 @@ import java.util.stream.IntStream;
 @Controller
 public class MainController {
 
+    @RequestMapping("/")
+    public String root() {
+        return "redirect:/question/list";
+    }
+
     int increaseNo = -1;
 
     @RequestMapping("/sbb")
