@@ -2,19 +2,18 @@ package com.ll.exam.sbb.service;
 
 import com.ll.exam.sbb.domain.Question;
 import com.ll.exam.sbb.repository.QuestionRepository;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionService {
-    @Autowired
-    private QuestionRepository questionRepository;
 
-    public Question findById(int id) {
-        Question q1 = questionRepository.findById(2).get();
-        Question q2 = questionRepository.findById(2).get();
-        System.out.println(q2.getAnswerList());
+  private final QuestionRepository questionRepository;
 
-        return q2;
-    }
+  public List<Question> getList() {
+    return questionRepository.findAll();
+  }
 }
