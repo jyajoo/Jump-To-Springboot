@@ -1,7 +1,8 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate = "~{layout}">
 
-<div class = "container my-3">
+<div layout:fragment = "content" class = "container my-3">
   <table>
     <thea class = "table">
       <tr>
@@ -20,4 +21,6 @@
     </tr>
     </tbody>
   </table>
+  <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
 </div>
+</html>

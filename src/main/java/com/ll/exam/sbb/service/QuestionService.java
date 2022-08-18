@@ -3,6 +3,7 @@ package com.ll.exam.sbb.service;
 import com.ll.exam.sbb.domain.Question;
 import com.ll.exam.sbb.exception.DataNotFoundException;
 import com.ll.exam.sbb.repository.QuestionRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -23,4 +24,12 @@ public class QuestionService {
       return questionRepository.findById(id)
           .orElseThrow(() -> new DataNotFoundException("no %d question not found.".formatted(id)));
     }
+
+  public void create(String subject, String content) {
+    Question question = new Question();
+    question.setSubject(subject);
+    question.setContent(content);
+    question.setCreateDate(LocalDateTime.now());
+    questionRepository.save(question);
+  }
 }
