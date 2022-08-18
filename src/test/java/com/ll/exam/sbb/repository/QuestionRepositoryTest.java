@@ -2,6 +2,8 @@ package com.ll.exam.sbb.repository;
 
 import com.ll.exam.sbb.domain.Question;
 import com.ll.exam.sbb.repository.QuestionRepository;
+import java.awt.print.Pageable;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -121,5 +125,30 @@ public class QuestionRepositoryTest {
         Question q = qList.get(0);
 
         assertThat(q.getSubject()).isEqualTo("sbb가 무엇인가요?");
+    }
+
+    @Test
+    void createManySampleData() {
+        boolean run = false;
+        if (run == false) {
+            return;
+        }
+
+        IntStream.rangeClosed(3, 300).forEach(id -> {
+            Question q = new Question();
+            q.setSubject("%d번 질문".formatted(id));
+            q.setContent("%d번 질문의 내용".formatted(id));
+            q.setCreateDate(LocalDateTime.now());
+            questionRepository.save(q);
+        });
+    }
+
+    @Test
+    void findAAllPageable() {
+        // Pageble : 한 페이지에 몇 개의 아이템이 나와야 하는지 + 현재 몇 페이지인지
+        PageRequest pageRequest = PageRequest.of(0, lastSampleDataId);
+        Page<Question> page = questionRepository.findAll(pageRequest);
+
+        assertThat(page.getTotalPages()).isEqualTo(1);
     }
 }
