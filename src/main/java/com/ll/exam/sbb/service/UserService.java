@@ -1,12 +1,11 @@
 package com.ll.exam.sbb.service;
 
-import com.ll.exam.sbb.config.SiteUser;
+import com.ll.exam.sbb.domain.SiteUser;
 import com.ll.exam.sbb.exception.SignupEmailDuplicatedException;
 import com.ll.exam.sbb.exception.SignupUsernameDuplicatedException;
 import com.ll.exam.sbb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.ll.exam.sbb.config;
+package com.ll.exam.sbb.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
