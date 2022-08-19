@@ -22,7 +22,7 @@ public class AnswerController {
   private final AnswerService answerService;
 
   @PostMapping("/create/{id}")
-  public String detail(@PathVariable int id, @Valid AnswerForm answerForm, BindingResult bindingResult, Model model) {
+  public String detail(@PathVariable long id, @Valid AnswerForm answerForm, BindingResult bindingResult, Model model) {
     Question question = questionService.getQuestion(id);
 
     if (bindingResult.hasErrors()) {

@@ -27,7 +27,7 @@ public class QuestionService {
       return questionRepository.findAll(pageable);
     }
 
-    public Question getQuestion(int id) throws DataNotFoundException{
+    public Question getQuestion(long id) throws DataNotFoundException{
       return questionRepository.findById(id)
           .orElseThrow(() -> new DataNotFoundException("no %d question not found.".formatted(id)));
     }
