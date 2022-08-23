@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.ll.exam.sbb.domain.Answer;
 import com.ll.exam.sbb.domain.Question;
+import com.ll.exam.sbb.domain.SiteUser;
+import com.ll.exam.sbb.service.UserService;
+import com.ll.exam.sbb.service.UserServiceTest;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -15,13 +18,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 @SpringBootTest
-class AnswerRepositoryTest {
+public class AnswerRepositoryTest {
 
   @Autowired
   private AnswerRepository answerRepository;
 
   @Autowired
   private QuestionRepository questionRepository;
+
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private UserService userService;
 
   @BeforeEach
   void beforeEach() {
@@ -30,7 +39,7 @@ class AnswerRepositoryTest {
   }
 
   private void createSampleData() {
-    QuestionRepositoryTest.createSampleData(questionRepository);
+    QuestionRepositoryTest.createSampleData(userService, questionRepository);
 
     // 관련 답변이 하나없는 상태에서 쿼리 발생
     Question q = questionRepository.findById(1L).get();
@@ -38,20 +47,24 @@ class AnswerRepositoryTest {
     a1.setContent("sbb는 질문답변 게시판 입니다.");
     a1.setQuestion(q);
     a1.setCreateDate(LocalDateTime.now());
+    a1.setAuthor(new SiteUser(1L));
     q.addAnswer(a1);
 
     Answer a2 = new Answer();
     a2.setContent("sbb에서는 주로 스프링부트관련 내용을 다룹니다.");
     a2.setQuestion(q);
     a2.setCreateDate(LocalDateTime.now());
+    a2.setAuthor(new SiteUser(2L));
     q.addAnswer(a2);
     questionRepository.save(q);
   }
 
-  private void clearData() {
-    QuestionRepositoryTest.clearData(questionRepository);
-    answerRepository.deleteAll();
-    answerRepository.truncateTable();
+  public static void clearData(UserRepository userRepository, AnswerRepository answerRepository, QuestionRepository questionRepository) {
+    UserServiceTest.clearData(userRepository, answerRepository, questionRepository);
+  }
+
+  private void clearData(){
+    clearData(userRepository, answerRepository, questionRepository);
   }
 
   @Test
@@ -62,11 +75,13 @@ class AnswerRepositoryTest {
     Answer a1 = new Answer();
     a1.setContent("네 자동으로 생성됩니다.");
     a1.setCreateDate(LocalDateTime.now());
+    a1.setAuthor(new SiteUser(1L));
     q.addAnswer(a1);
 
     Answer a2 = new Answer();
     a2.setContent("네네~ 맞아요!");
     a2.setCreateDate(LocalDateTime.now());
+    a2.setAuthor(new SiteUser(2L));
     q.addAnswer(a2);
 
     questionRepository.save(q);

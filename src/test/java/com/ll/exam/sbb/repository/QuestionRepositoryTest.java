@@ -1,7 +1,10 @@
 package com.ll.exam.sbb.repository;
 
 import com.ll.exam.sbb.domain.Question;
+import com.ll.exam.sbb.domain.SiteUser;
 import com.ll.exam.sbb.repository.QuestionRepository;
+import com.ll.exam.sbb.service.UserService;
+import com.ll.exam.sbb.service.UserServiceTest;
 import java.awt.print.Pageable;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +24,16 @@ public class QuestionRepositoryTest {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
     private static long lastSampleDataId;
 
     @BeforeEach
@@ -29,21 +42,24 @@ public class QuestionRepositoryTest {
         createSampleData();
     }
 
-    public static void clearData(QuestionRepository questionRepository) {
-        questionRepository.deleteAll();
-        questionRepository.truncateTable();
+    public static void clearData(UserRepository userRepository, AnswerRepository answerRepository, QuestionRepository questionRepository) {
+        UserServiceTest.clearData(userRepository, answerRepository, questionRepository);
     }
 
-    public static long createSampleData(QuestionRepository questionRepository) {
+    public static long createSampleData(UserService userService, QuestionRepository questionRepository) {
+        UserServiceTest.createSampeleData(userService);
+
         Question q1 = new Question();
         q1.setSubject("sbb가 무엇인가요?");
         q1.setContent("sbb에 대해서 알고 싶습니다.");
+        q1.setAuthor(new SiteUser(2L));
         q1.setCreateDate(LocalDateTime.now());
         questionRepository.save(q1);
 
         Question q2 = new Question();
         q2.setSubject("스프링부트 모델 질문입니다.");
         q2.setContent("id는 자동으로 생성되나요?");
+        q2.setAuthor(new SiteUser(2L));
         q2.setCreateDate(LocalDateTime.now());
         questionRepository.save(q2);
 
@@ -51,11 +67,11 @@ public class QuestionRepositoryTest {
     }
 
     private void createSampleData() {
-        lastSampleDataId = createSampleData(questionRepository);
+        lastSampleDataId = createSampleData(userService, questionRepository);
     }
 
     private void clearData() {
-        clearData(questionRepository);
+        clearData(userRepository, answerRepository, questionRepository);
     }
 
     @Test
@@ -64,12 +80,14 @@ public class QuestionRepositoryTest {
         q1.setSubject("sbb가 무엇인가요?");
         q1.setContent("sbb에 대해서 알고 싶습니다.");
         q1.setCreateDate(LocalDateTime.now());
+        q1.setAuthor(new SiteUser(2L));
         questionRepository.save(q1);
 
         Question q2 = new Question();
         q2.setSubject("스프링부트 모델 질문입니다.");
         q2.setContent("id는 자동으로 생성되나요?");
         q2.setCreateDate(LocalDateTime.now());
+        q2.setAuthor(new SiteUser(2L));
         questionRepository.save(q2);
 
         assertThat(q1.getId()).isEqualTo(lastSampleDataId + 1);
@@ -139,6 +157,7 @@ public class QuestionRepositoryTest {
             q.setSubject("%d번 질문".formatted(id));
             q.setContent("%d번 질문의 내용".formatted(id));
             q.setCreateDate(LocalDateTime.now());
+            q.setAuthor(new SiteUser(2L));
             questionRepository.save(q);
         });
     }
