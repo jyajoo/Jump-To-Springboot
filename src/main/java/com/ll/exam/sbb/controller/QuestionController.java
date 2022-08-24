@@ -4,6 +4,7 @@ import com.ll.exam.sbb.domain.Question;
 import com.ll.exam.sbb.domain.SiteUser;
 import com.ll.exam.sbb.dto.AnswerForm;
 import com.ll.exam.sbb.dto.QuestionForm;
+import com.ll.exam.sbb.exception.DataNotFoundException;
 import com.ll.exam.sbb.repository.QuestionRepository;
 import com.ll.exam.sbb.service.QuestionService;
 import com.ll.exam.sbb.service.UserService;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequestMapping("/question")
 @Controller
@@ -54,7 +57,8 @@ public class QuestionController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String questionCreate(Principal principal, @Valid QuestionForm questionForm, BindingResult bindingResult, Model model) {
+    public String questionCreate(Principal principal, @Valid QuestionForm questionForm,
+        BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
@@ -63,5 +67,62 @@ public class QuestionController {
 
         questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
         return "redirect:/question/list";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modify/{id}")
+    public String questionModify(QuestionForm questionForm, @PathVariable Long id,
+        Principal principal) {
+        Question question = questionService.getQuestion(id);
+        if (question == null) {
+            throw new DataNotFoundException("%d번 질문은 존재하지 않습니다.");
+        }
+
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+
+        questionForm.setSubject(question.getSubject());
+        questionForm.setContent(question.getContent());
+
+        return "question_form";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    public String questionModify(@Valid QuestionForm questionForm, BindingResult bindingResult,
+        Principal principal, @PathVariable Long id) {
+        if (bindingResult.hasErrors()) {
+            return "question_form";
+        }
+
+        Question question = questionService.getQuestion(id);
+
+        if (question == null) {
+            throw new DataNotFoundException("%d번 질문은 존재하지 않습니다.");
+        }
+
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
+        }
+
+        questionService.modify(question, questionForm.getSubject(), questionForm.getContent());
+        return String.format("redirect:/question/detail/%s", id);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    public String questionDelete(Principal principal, @PathVariable Long id) {
+        Question question = questionService.getQuestion(id);
+
+        if (question == null) {
+            throw new DataNotFoundException("%d번 질문은 존재하지 않습니다.");
+        }
+
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
+        }
+        questionService.delete(question);
+        return "redirect:/";
     }
 }
