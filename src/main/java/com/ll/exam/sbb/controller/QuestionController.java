@@ -74,9 +74,6 @@ public class QuestionController {
     public String questionModify(QuestionForm questionForm, @PathVariable Long id,
         Principal principal) {
         Question question = questionService.getQuestion(id);
-        if (question == null) {
-            throw new DataNotFoundException("%d번 질문은 존재하지 않습니다.");
-        }
 
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
@@ -98,10 +95,6 @@ public class QuestionController {
 
         Question question = questionService.getQuestion(id);
 
-        if (question == null) {
-            throw new DataNotFoundException("%d번 질문은 존재하지 않습니다.");
-        }
-
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
         }
@@ -114,10 +107,6 @@ public class QuestionController {
     @GetMapping("/delete/{id}")
     public String questionDelete(Principal principal, @PathVariable Long id) {
         Question question = questionService.getQuestion(id);
-
-        if (question == null) {
-            throw new DataNotFoundException("%d번 질문은 존재하지 않습니다.");
-        }
 
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제 권한이 없습니다.");
