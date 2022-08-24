@@ -1,6 +1,7 @@
 package com.ll.exam.sbb.service;
 
 import com.ll.exam.sbb.domain.Question;
+import com.ll.exam.sbb.domain.SiteUser;
 import com.ll.exam.sbb.exception.DataNotFoundException;
 import com.ll.exam.sbb.repository.QuestionRepository;
 import java.time.LocalDateTime;
@@ -32,10 +33,11 @@ public class QuestionService {
           .orElseThrow(() -> new DataNotFoundException("no %d question not found.".formatted(id)));
     }
 
-  public void create(String subject, String content) {
+  public void create(String subject, String content, SiteUser siteUser) {
     Question question = new Question();
     question.setSubject(subject);
     question.setContent(content);
+    question.setAuthor(siteUser);
     question.setCreateDate(LocalDateTime.now());
     questionRepository.save(question);
   }
