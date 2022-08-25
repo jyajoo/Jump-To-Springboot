@@ -21,11 +21,15 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public Page<Question> getList(int page) {
+    public Page<Question> getList(String kw, int page) {
       List<Sort.Order> sorts = new ArrayList<>();
       sorts.add(Sort.Order.desc("createDate"));
       PageRequest pageable = PageRequest.of(page, 10, Sort.by(sorts));
-      return questionRepository.findAll(pageable);
+
+      if (kw == null || kw.trim().length() == 0) {
+        return questionRepository.findAll(pageable);
+      }
+      return questionRepository.findDistinctBySubjectContainsOrContentContainsOrAuthor_usernameOrAnswerList_contentContainsOrAnswerList_author_username(kw, kw, kw, kw, kw, pageable);
     }
 
     public Question getQuestion(long id) throws DataNotFoundException{
