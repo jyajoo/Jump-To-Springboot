@@ -1,5 +1,6 @@
 package com.ll.exam.sbb.domain;
 
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +27,7 @@ public class Answer {
 
     @ManyToOne
     private SiteUser author;
+
+    @ManyToMany
+    Set<SiteUser> voter;
 }

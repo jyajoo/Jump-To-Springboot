@@ -29,10 +29,14 @@
       sec:authorize = "isAuthenticated()" th:if = "${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
       th:text="수정"></a>
 
-      <a onclick="if (!confirm('정말로 삭제하시겠습니까?') return false;" th:href = "@{|/question/delete/${question.id}|}"
+      <a onclick="if (!confirm('정말로 삭제하시겠습니까?')) return false;" th:href = "@{|/question/delete/${question.id}|}"
          class = "btn btn-sm btn-outline-secondary"
          sec:authorize = "isAuthenticated()" th:if = "${question.author != null and #authentication.getPrincipal().getUsername == question.author.username}"
       th:text = "삭제"></a>
+
+      <a onclick = "if(!confirm('추천하시겠습니까?')) return false;"th:href="@{|/question/vote/${question.id}|}"
+         class = "btn btn-sm btn-outline-secondary">추천</a>
+      <span class = "badge rounded-pill bg-success" th:text = "${#lists.size(question.voter)}"></span>
     </div>
   </div>
 
@@ -61,9 +65,13 @@
         sec:authorize = "isAuthenticated()" th:if = "${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
         th:text = "수정"></a>
 
-        <a th:href="@{|/answer/delete/${answer.id}|}" class = "btn btn-sm btn-outline-secondary"
+        <a onclick="if (!confirm('정말로 삭제하시겠습니까?')) return false;" th:href="@{|/answer/delete/${answer.id}|}" class = "btn btn-sm btn-outline-secondary"
         sec:authorize = "isAuthenticated()" th:if = "${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
         th:text = "삭제"></a>
+
+        <a onclick = "if(!confirm('추천하시겠습니까?')) return false;"th:href="@{|/answer/vote/${answer.id}|}"
+           class = "btn btn-sm btn-outline-secondary">추천</a>
+        <span class = "badge rounded-pill bg-success" th:text = "${#lists.size(answer.voter)}"></span>
       </div>
     </div>
   </div>

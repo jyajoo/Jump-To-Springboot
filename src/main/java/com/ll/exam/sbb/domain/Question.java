@@ -1,6 +1,7 @@
 package com.ll.exam.sbb.domain;
 
 import java.util.ArrayList;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +31,9 @@ public class Question {
 
     @ManyToOne
     private SiteUser author;
+
+    @ManyToMany
+    Set<SiteUser> voter;
 
     public void addAnswer(Answer answer) {
         answer.setQuestion(this);
