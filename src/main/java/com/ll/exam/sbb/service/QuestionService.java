@@ -33,13 +33,13 @@ public class QuestionService {
           .orElseThrow(() -> new DataNotFoundException("no %d question not found.".formatted(id)));
     }
 
-  public void create(String subject, String content, SiteUser siteUser) {
+  public Question create(String subject, String content, SiteUser siteUser) {
     Question question = new Question();
     question.setSubject(subject);
     question.setContent(content);
     question.setAuthor(siteUser);
     question.setCreateDate(LocalDateTime.now());
-    questionRepository.save(question);
+    return questionRepository.save(question);
   }
 
   public void modify(Question question, String subject, String content) {

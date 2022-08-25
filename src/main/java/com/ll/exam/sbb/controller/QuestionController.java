@@ -65,8 +65,9 @@ public class QuestionController {
 
         SiteUser siteUser = userService.getUser(principal.getName());
 
-        questionService.create(questionForm.getSubject(), questionForm.getContent(), siteUser);
-        return "redirect:/question/list";
+        Question question = questionService.create(questionForm.getSubject(),
+            questionForm.getContent(), siteUser);
+        return "redirect:/question/detail/%d".formatted(question.getId());
     }
 
     @PreAuthorize("isAuthenticated()")
