@@ -45,9 +45,9 @@ public class AnswerController {
 
     SiteUser siteUser = userService.getUser(principal.getName());
 
-    answerService.create(question, answerForm.getContent(), siteUser);
+    Answer answer = answerService.create(question, answerForm.getContent(), siteUser);
 
-    return "redirect:/question/detail/%d".formatted(id);
+    return "redirect:/question/detail/%d#answer_%d".formatted(id, answer.getId());
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -75,7 +75,7 @@ public class AnswerController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정 권한이 없습니다.");
     }
     answerService.modify(answer, answerForm.getContent());
-    return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+    return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
   }
 
   @PreAuthorize("isAuthenticated()")
@@ -98,6 +98,6 @@ public class AnswerController {
     SiteUser siteUser = userService.getUser(principal.getName());
 
     answerService.vote(answer, siteUser);
-    return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+    return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
   }
 }
